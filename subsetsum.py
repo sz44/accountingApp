@@ -23,19 +23,14 @@ def subsetSum2(nums, k):
 
     for row in range(1, len(nums)+1):
         for col in range(abs(minVal)+k+1):
-            # check condition 2,3
+            # check condition 2,3,4
             a = nums[row-1] == sums[col] 
             b = dp[row-1][col]
+            c =  0 <= col - nums[row-1] < len(sums) and dp[row-1][col - nums[row-1]]
 
-            # check condition 4
-            # if n >= 0, k-n < k (left of k) so need to check k-n >= 0
-            # if n < 0, k-n > k (right of k) so need to check k-n < len(sums)
-            c = nums[row-1] >= 0 and col - nums[row-1] >= 0 and dp[row-1][col - nums[row-1]]
-            d = nums[row-1] < 0 and col - nums[row-1] < len(sums) and dp[row-1][col - nums[row-1]]
+            dp[row][col] = a or b or c
 
-            dp[row][col] = a or b or c or d
-
-    return dp
+    return dp[-1][-1]
 
 nums = [-1,3,5,-2,8]
 k = 7
