@@ -11,6 +11,11 @@ def subsetSum(nums, k):
                 dp[row][col] = True
     return dp
 
+# condition 1: if nums == {} (empty set), False for all k
+# condition 2: if n == k, (where n is ith number of nums), True
+# condition 3: if row-1 == True (subset already True), True
+# condition 4: if k-n == True (in prev rows/ subset), True
+
 def subsetSum2(nums, k):
     minVal = min(nums)
     sums = [i for i in range(minVal, k+1)]
@@ -18,18 +23,17 @@ def subsetSum2(nums, k):
 
     for row in range(1, len(nums)+1):
         for col in range(abs(minVal)+k+1):
-            if nums[row-1] == sums[col]:
-                dp[row][col] = True
+            # check condition 2,3
+            a = nums[row-1] == sums[col] 
+            b = dp[row-1][col]
 
-            if dp[row-1][col]:
-                dp[row][col] = True
+            # check condition 4
+            # if n >= 0, k-n < k (left of k) so need to check k-n >= 0
+            # if n < 0, k-n > k (right of k) so need to check k-n < len(sums)
+            c = nums[row-1] >= 0 and col - nums[row-1] >= 0 and dp[row-1][col - nums[row-1]]
+            d = nums[row-1] < 0 and col - nums[row-1] < len(sums) and dp[row-1][col - nums[row-1]]
 
-            if nums[row-1] >= 0:
-                if col - nums[row-1] >= 0 and dp[row-1][col - nums[row-1]]:
-                    dp[row][col] = True
-            else:
-                if col - nums[row-1] < len(sums) and dp[row-1][col - nums[row-1]]:
-                    dp[row][col] = True
+            dp[row][col] = a or b or c or d
 
     return dp
 
