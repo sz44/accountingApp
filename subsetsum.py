@@ -3,7 +3,7 @@
 # condition c: if row-1 == True (subset already True), True
 # condition d: if k-n == True (in prev rows/ subset), True
 
-def subsetSum(nums, k):
+def subset_sum_table(nums, k):
     min_val = min(nums)
     # for all positive integers
     if min_val > 0:
@@ -25,14 +25,47 @@ def subsetSum(nums, k):
 
             dp[row][col] = b or c or d
 
-    return dp[-1][-1]
+    return dp
+
+def subset_sum(table, nums, k):
+    res = []
+    row = len(table)-1
+    col = len(table[0])-1
+    min_val = min(nums)
+
+    # case 1: no subset
+    if not table[row][col]:
+        return []
+
+    # case 2: k in nums 
+    for n in nums:
+        if n == k:
+            return [n]
+
+    while row > 0 and col >= 0:
+        # condition b 
+        if nums[row-1] == col - abs(min_val):
+            res.append(nums[row-1])
+            break
+    
+        # condition c
+        elif table[row-1][col]:
+            row -= 1
+
+        # condition d 
+        elif table[row-1][col-nums[row-1]]:
+            res.append(nums[row-1])
+            col -= nums[row-1]
+            row -= 1
+
+    return res
 
 import time
 def estimate_time(nums, k):
     nums1 = [1,2,3,4,5,6,7,8,9,10]
     k1 = 55
     start_time = time.time()
-    subsetSum(nums1,k1)
+    subset_sum_table(nums1,k1)
     end_time = time.time()
     elapsed_time = end_time - start_time
     mn = len(nums) / 10 
@@ -54,10 +87,16 @@ def generate_test_data(n,k):
 # k = 7
 # a = subsetSum2(nums, k)
 # print(a)
-nums, k = generate_test_data(100, 10000)
+nums, k = generate_test_data(1000, 10000)
 estimate_time(nums, k)
 
 start_time = time.time()
-print(subsetSum(nums,k))
+table = subset_sum_table(nums,k)
+stop_time = time.time()
+print(f"Time taken: {stop_time-start_time:.6f} seconds")
+
+start_time = time.time()
+a = subset_sum(table, nums, k)
+print(k, a)
 stop_time = time.time()
 print(f"Time taken: {stop_time-start_time:.6f} seconds")
