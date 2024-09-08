@@ -18,15 +18,14 @@ def subsetSum(nums, k):
 
 def subsetSum2(nums, k):
     minVal = min(nums)
-    sums = [i for i in range(minVal, k+1)]
     dp = [[False]*(abs(minVal)+k+1) for i in range(len(nums)+1)]
 
     for row in range(1, len(nums)+1):
         for col in range(abs(minVal)+k+1):
             # check condition 2,3,4
-            a = nums[row-1] == sums[col] 
+            a = nums[row-1] == col - abs(minVal)
             b = dp[row-1][col]
-            c =  0 <= col - nums[row-1] < len(sums) and dp[row-1][col - nums[row-1]]
+            c =  0 <= col - nums[row-1] < abs(minVal)+k+1 and dp[row-1][col - nums[row-1]]
 
             dp[row][col] = a or b or c
 
