@@ -3,6 +3,7 @@
 # condition c: if row-1 == True (subset already True), True
 # condition d: if k-n == True (in prev rows/ subset), True
 
+# return table
 def subset_sum_table(nums, k):
     min_val = min(nums)
     # for all positive integers
@@ -14,7 +15,7 @@ def subset_sum_table(nums, k):
     for row in range(1, len(nums)+1):
         for col in range(num_cols):
             # check condition b,c,d
-            current_sum = col - abs(min_val)
+            current_sum = col + min_val
             b = nums[row-1] == current_sum
 
             c = dp[row-1][col]
@@ -27,11 +28,14 @@ def subset_sum_table(nums, k):
 
     return dp
 
+# returns solution set (assumes 1 solution)
 def subset_sum(table, nums, k):
     res = []
     row = len(table)-1
     col = len(table[0])-1
     min_val = min(nums)
+    if min_val > 0:
+        min_val = 0
 
     # case 1: no subset
     if not table[row][col]:
@@ -44,7 +48,7 @@ def subset_sum(table, nums, k):
 
     while row > 0 and col >= 0:
         # condition b 
-        if nums[row-1] == col - abs(min_val):
+        if nums[row-1] == col + min_val:
             res.append(nums[row-1])
             break
     
@@ -83,11 +87,14 @@ def generate_test_data(n,k):
     nums = [random.randint(-k,k) for i in range(n)]
     return [nums, k] 
     
-# nums = [-1,3,5,-2,8]
-# k = 7
+nums = [-1,-3,5,2,8]
+k = 7
+
+# nums = [1, -2, 3, -1, 2, -3]
+# k = 0
 # a = subsetSum2(nums, k)
 # print(a)
-nums, k = generate_test_data(1000, 10000)
+# nums, k = generate_test_data(1000, 10000)
 estimate_time(nums, k)
 
 start_time = time.time()
