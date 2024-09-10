@@ -7,9 +7,15 @@
 def subset_sum_table(nums, k):
     min_val = min(nums)
     # for all positive integers
+
     if min_val > 0:
         min_val = 0
+
     num_cols = abs(min_val)+k+1
+    # for negative need to extend table right
+    if min_val < 0:
+        num_cols += abs(min_val)
+
     dp = [[False]*num_cols for i in range(len(nums)+1)]
 
     for row in range(1, len(nums)+1):
@@ -31,11 +37,11 @@ def subset_sum_table(nums, k):
 # returns solution set (assumes 1 solution)
 def subset_sum(table, nums, k):
     res = []
-    row = len(table)-1
-    col = len(table[0])-1
     min_val = min(nums)
     if min_val > 0:
         min_val = 0
+    row = len(table)-1
+    col = len(table[0])-1+min_val # adjustment for start at sum k
 
     # case 1: no subset
     if not table[row][col]:
@@ -87,14 +93,32 @@ def generate_test_data(n,k):
     nums = [random.randint(-k,k) for i in range(n)]
     return [nums, k] 
     
-nums = [-1,-3,5,2,8]
-k = 7
+def get_test_data(filename):
+    nums = []
+    with open(filename, "r") as f:
+        for line in f:
+            d = float(line)
+            d *= 100
+            d = round(d)
+            nums.append(int(d))
+    return nums
 
+# nums = [-1,-3,5,2,8]
+# k = 7
+
+# nums = [18, 52, 72, 92, 76, -83, 19, 74, -25, 69]
+# nums = [-95, 34, -90, -99, -57, 27, 25, 94, -1, 56 ]
+# k = 100
+# nums = [2,3,-1]
+# k = 4
+nums = get_test_data("a.txt")
+print(f"sun: {sum(nums)}")
+k = 192354
 # nums = [1, -2, 3, -1, 2, -3]
 # k = 0
 # a = subsetSum2(nums, k)
 # print(a)
-# nums, k = generate_test_data(1000, 10000)
+# nums, k = generate_test_data(1000, 100000)
 estimate_time(nums, k)
 
 start_time = time.time()
